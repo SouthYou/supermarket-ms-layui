@@ -54,24 +54,15 @@
                 <li class="layui-nav-item" lay-unselect>
                     <a href="javascript:;" data-refresh="刷新"><i class="fa fa-refresh"></i></a>
                 </li>
-                <li class="layui-nav-item" lay-unselect>
+                <!-- <li class="layui-nav-item" lay-unselect>
                     <a href="javascript:;" data-clear="清理" class="layuimini-clear"><i class="fa fa-trash-o"></i></a>
-                </li>
+                </li> -->
                 <li class="layui-nav-item mobile layui-hide-xs" lay-unselect>
                     <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                 </li>
                 <li class="layui-nav-item layuimini-setting">
-                    <a href="javascript:;">admin</a>
+                    <a class="user-name"></a>
                     <dl class="layui-nav-child">
-                        <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
-                        </dd>
-                        <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-password.html" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
-                        </dd>
-                        <dd>
-                            <hr>
-                        </dd>
                         <dd>
                             <a href="javascript:;" class="login-out">退出登录</a>
                         </dd>
@@ -116,8 +107,15 @@
 
 </div>
 <script src="lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="lib/js-cookie-2.2.1/js.cookie-2.2.1.min.js" charset="utf-8"></script>
 <script src="js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
+    if (!Cookies.get('token')) {
+        window.location = '/page/login.html';
+    }
+    if (window.location.pathname === '/index.html') {
+        window.location = '/';
+    }
     layui.use(['jquery', 'layer', 'miniAdmin', 'miniTongji'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
@@ -135,6 +133,9 @@
             pageAnim: true,             // 切换菜单动画
         };
         miniAdmin.render(options);
+        
+        let username = localStorage.getItem('username');
+        $('.user-name').text(username);
 
         // 百度统计代码，只统计指定域名
         miniTongji.render({
@@ -147,7 +148,11 @@
         });
 
         $('.login-out').on("click", function () {
-            layer.msg('退出登录成功', function () {
+            layer.msg('退出登录成功', {
+                icon: 1,
+                time: 1000,
+            }, function () {
+                Cookies.remove('token');
                 window.location = 'page/login.html';
             });
         });

@@ -93,7 +93,11 @@
     ©版权所有 2014-2018 叁贰柒工作室<span class="padding-5">|</span><a target="_blank" href="http://www.miitbeian.gov.cn">粤ICP备16006642号-2</a>
 </div> -->
 <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../lib/js-cookie-2.2.1/js.cookie-2.2.1.min.js" charset="utf-8"></script>
 <script>
+    if (Cookies.get('token')) {
+        window.location = '../index.html';
+    }
     layui.use(['form','jquery'], function () {
         var $ = layui.jquery,
             form = layui.form,
@@ -122,17 +126,35 @@
 
         // 进行登录操作
         form.on('submit(login)', function (data) {
-            data = data.field;
-            if (data.username == '') {
+            let params = data.field;
+            if (params.username == '') {
                 layer.msg('用户名不能为空');
                 return false;
             }
-            if (data.password == '') {
+            if (params.password == '') {
                 layer.msg('密码不能为空');
                 return false;
             }
-            layer.msg('登录成功', function () {
-                window.location = '../index.html';
+            $.ajax({
+                url: 'http://localhost:8080/user/login',
+                type: 'post',
+                data: JSON.stringify(params),
+                contentType: 'application/json',
+                success: function (res) {
+                    console.log(res);
+                    if (res.code === 20000) {
+                        layer.msg('登录成功', {
+                            icon: 1,
+                            time: 1000
+                        }, function () {
+                            Cookies.set('token', res.data);
+                            localStorage.setItem("username", params.username);
+                            window.location = '../index.html';
+                        });
+                    } else {
+                        layer.msg(res.message, { icon: 2 });
+                    }
+                }
             });
             return false;
         });
