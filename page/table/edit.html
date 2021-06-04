@@ -2,43 +2,49 @@
 
     <div class="layui-form layuimini-form">
         <div class="layui-form-item">
-            <label class="layui-form-label required">用户名</label>
+            <label class="layui-form-label">商品ID</label>
             <div class="layui-input-block">
-                <input type="text" name="username" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" value="" class="layui-input">
-                <tip>填写自己管理账号的名称。</tip>
+                <input type="text" id="goodsId" name="goodsId" readonly="readonly" value="" class="layui-input">
+                <tip>商品ID不可更改</tip>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label required">性别</label>
+            <label class="layui-form-label">商品名称</label>
             <div class="layui-input-block">
-                <input type="radio" name="sex" value="男" title="男" checked="">
-                <input type="radio" name="sex" value="女" title="女">
+                <input type="text" id="goodsName" name="goodsName" readonly="readonly" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label required">手机</label>
+            <label class="layui-form-label">商品类型</label>
             <div class="layui-input-block">
-                <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value="" class="layui-input">
+                <input type="text" id="goodsType" name="goodsType" readonly="readonly" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">邮箱</label>
+            <label class="layui-form-label required">成本</label>
             <div class="layui-input-block">
-                <input type="email" name="email" placeholder="请输入邮箱" value="" class="layui-input">
+                <input type="number" id="cost" name="cost" placeholder="请输入新的成本" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">职业</label>
+            <label class="layui-form-label required">售价</label>
             <div class="layui-input-block">
-                <input type="text" name="work" placeholder="请输入职业" value="" class="layui-input">
+                <input type="number" id="price" name="price" placeholder="请输入新的售价" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">备注信息</label>
+            <label class="layui-form-label required">生产日期</label>
             <div class="layui-input-block">
-                <textarea name="remark" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+                <input type="text" id="productionDate" name="productionDate" placeholder="请选择新的生产日期" value="" class="layui-input">
             </div>
         </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label required">保质期</label>
+            <div class="layui-input-block">
+                <input type="text" id="duration" name="duration" placeholder="请输入新的保质期" value="" class="layui-input">
+            </div>
+        </div>
+        <!-- 过期日期是根据生产日期和保质期计算而来 -->
 
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -48,16 +54,21 @@
     </div>
 </div>
 <script>
-    layui.use(['form', 'table'], function () {
+    layui.use(['form', 'table', 'laydate'], function () {
         var form = layui.form,
             layer = layui.layer,
             table = layui.table,
-            $ = layui.$;
+            $ = layui.$,
+            laydate = layui.laydate;
 
         /**
          * 初始化表单，要加上，不然刷新部分组件可能会不加载
          */
         form.render();
+
+        laydate.render({
+            elem: '#productionDate'
+        });
 
         // 当前弹出层，防止ID被覆盖
         var parentIndex = layer.index;
