@@ -4,32 +4,32 @@
         <div class="layui-form-item">
             <label class="layui-form-label">商品ID</label>
             <div class="layui-input-block">
-                <input type="text" id="goodsId" name="goodsId" readonly="readonly" value="" class="layui-input">
+                <input type="text" id="goodsId" name="id" readonly="readonly" value="" class="layui-input">
                 <tip>商品ID不可更改</tip>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">商品名称</label>
             <div class="layui-input-block">
-                <input type="text" id="goodsName" name="goodsName" readonly="readonly" value="" class="layui-input">
+                <input type="text" id="goodsName" name="name" readonly="readonly" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">商品类型</label>
             <div class="layui-input-block">
-                <input type="text" id="goodsType" name="goodsType" readonly="readonly" value="" class="layui-input">
+                <input type="text" id="goodsType" name="type" readonly="readonly" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">成本</label>
             <div class="layui-input-block">
-                <input type="number" id="cost" name="cost" placeholder="请输入新的成本" value="" class="layui-input">
+                <input type="text" id="cost" name="cost" required lay-verify="required" placeholder="请输入新的成本" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label required">售价</label>
             <div class="layui-input-block">
-                <input type="number" id="price" name="price" placeholder="请输入新的售价" value="" class="layui-input">
+                <input type="text" id="price" name="price" required lay-verify="required" placeholder="请输入新的售价" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
@@ -45,6 +45,12 @@
             </div>
         </div>
         <!-- 过期日期是根据生产日期和保质期计算而来 -->
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label required">保质期</label>
+            <div class="layui-input-block">
+                <input type="text" id="duration" name="duration" placeholder="请输入新的保质期" value="" class="layui-input">
+            </div>
+        </div>
 
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -75,17 +81,23 @@
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
-
-                // 关闭弹出层
-                layer.close(index);
-                layer.close(parentIndex);
-
+            $.ajax({
+                url: apiUrl + '/goods/modify',
+                type: 'POST',
+                data: JSON.stringify(data.field),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.code === 20000) {
+                        var index = layer.alert(res.message, {
+                            title: '返回信息'
+                        }, function () {
+                            // 关闭弹出层
+                            layer.close(index);
+                            layer.close(parentIndex);
+                        });
+                    }           
+                }
             });
-
-
             return false;
         });
 

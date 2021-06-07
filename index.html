@@ -110,19 +110,25 @@
 <script src="lib/js-cookie-2.2.1/js.cookie-2.2.1.min.js" charset="utf-8"></script>
 <script src="js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
-    if (!Cookies.get('token')) {
+    if (!Cookies.get('_token')) {
         window.location = '/page/login.html';
     }
     if (window.location.pathname === '/index.html') {
         window.location = '/';
     }
-    var apiUrl = 'http://localhost:8080';
+    var apiUrl = 'http://supermarket.cn:8080';
     layui.use(['jquery', 'layer', 'miniAdmin', 'miniTongji'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
             miniAdmin = layui.miniAdmin,
             miniTongji = layui.miniTongji;
-
+        // ajax全局设置
+        $.ajaxSetup({
+            // 发送cookie
+            xhrFields: {
+                withCredentials: true
+            }
+        });
         var options = {
             iniUrl: "api/init.json",    // 初始化接口
             clearUrl: "api/clear.json", // 缓存清理接口
@@ -149,12 +155,24 @@
         });
 
         $('.login-out').on("click", function () {
-            layer.msg('退出登录成功', {
-                icon: 1,
-                time: 1000,
-            }, function () {
-                Cookies.remove('token');
-                window.location = 'page/login.html';
+            $.ajax({
+                url: apiUrl + '/user/logout',
+                type: 'get',
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.code === 20000) {
+                        layer.msg('退出登录成功', {
+                            icon: 1,
+                            time: 1000,
+                        }, function () {
+                            Cookies.remove('_token');
+                            window.location = 'page/login.html';
+                        });
+                    } else {
+                        layer.msg('操作失败!');
+                    }
+                    
+                }
             });
         });
     });
